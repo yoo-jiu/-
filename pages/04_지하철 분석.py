@@ -4,7 +4,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 
 # CSV 경로 (루트 폴더)
-DATA_PATH = "subway.csv"
+DATA_PATH = "./subway.csv"
 
 def load_data():
     return pd.read_csv(DATA_PATH, encoding="cp949")
