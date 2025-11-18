@@ -1,113 +1,88 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-import plotly.graph_objects as go
 
-st.set_page_config(page_title="세계 MBTI 데이터 분석", page_icon="🧠", layout="wide")
+st.set_page_config(page_title="MBTI 분석 대시보드", layout="wide")
 
-st.title("🌍 세계 MBTI 데이터 분석 대시보드")
-
-# --- 데이터 불러오기 ---
+# 데이터 불러오기
 @st.cache_data
 def load_data():
-    return pd.read_csv("countriesMBTI_16types.csv")
+    df = pd.read_csv("countriesMBTI_16types.csv")
+    return df
 
 df = load_data()
 
-# --- 탭 생성 ---
-tab1, tab2 = st.tabs(["📊 나라별 MBTI 분석", "🧠 MBTI 유형별 국가 비교"])
+st.title("🌍 MBTI 국가별 분석 대시보드")
 
-# ---------------------- [탭 1: 나라별 MBTI 분석] ----------------------
+# 탭 생성
+tab1, tab2 = st.tabs(["📌 국가별 MBTI 비율", "📌 MBTI별 상위 국가 분석"])
+
+# ============================================
+# 📌 TAB 1 — "국가를 선택하면 MBTI 비율 그래프"
+# ============================================
 with tab1:
-    st.subheader("📊 나라별 MBTI 비율")
-    country_list = sorted(df["Country"].unique())
-    selected_country = st.selectbox("국가를 선택하세요 🌎", country_list, key="country")
 
-    country_data = df[df["Country"] == selected_country].iloc[0, 1:]
-    country_df = pd.DataFrame({
-        "MBTI": country_data.index,
-        "비율": country_data.values
-    }).sort_values(by="비율", ascending=False)
+    country = st.selectbox("국가를 선택하세요:", df["Country"].unique())
 
-    top_type = country_df.iloc[0]["MBTI"]
-    n = len(country_df)
+    selected = df[df["Country"] == country].iloc[0]
+
+    mbti_cols = df.columns[1:]
+    mbti_values = selected[mbti_cols]
+
+    # 1등은 빨간색 / 나머지는 파란색 그라디언트
+    max_type = mbti_values.idxmax()
+
     colors = [
-        "#FF3B30" if mbti == top_type else f"rgba(0,102,255,{0.3+0.7*(1-i/n):.2f})"
-        for i, mbti in enumerate(country_df["MBTI"])
+        "#FF0000" if col == max_type else "rgba(30,144,255,0.6)"
+        for col in mbti_cols
     ]
 
-    fig = px.bar(
-        country_df,
-        x="MBTI",
-        y="비율",
-        text=country_df["비율"].apply(lambda x: f"{x*100:.1f}%")
+    fig1 = px.bar(
+        x=mbti_cols,
+        y=mbti_values,
+        color=mbti_cols,
+        color_discrete_sequence=colors,
+        title=f"🇺🇳 {country} MBTI 비율"
     )
-    fig.update_traces(marker_color=colors, textposition="outside")
-    fig.update_layout(
-        title=f"🇺🇳 {selected_country}의 MBTI 유형 비율",
-        xaxis_title="MBTI 유형",
-        yaxis_title="비율",
-        template="simple_white",
-        showlegend=False
-    )
-    st.plotly_chart(fig, use_container_width=True)
 
-# ---------------------- [탭 2: MBTI별 국가 비교] ----------------------
+    fig1.update_layout(showlegend=False, xaxis_title="MBTI 유형", yaxis_title="비율(%)")
+    st.plotly_chart(fig1, use_container_width=True)
+
+# ============================================
+# 📌 TAB 2 — "MBTI 선택 → 상위 10개 국가"
+# ============================================
 with tab2:
-    st.subheader("🧠 MBTI 유형별 국가 순위")
-    mbti_types = [c for c in df.columns if c != "Country"]
-    selected_type = st.selectbox("MBTI 유형을 선택하세요", mbti_types, key="mbti_type")
 
-    # 상위 10개국 + South Korea 포함
-    top10_df = df[["Country", selected_type]].sort_values(by=selected_type, ascending=False).head(10)
-    if "South Korea" not in top10_df["Country"].values:
+    mbti_type = st.selectbox("MBTI 유형을 선택하세요:", df.columns[1:])
+
+    # 해당 MBTI 기준으로 정렬
+    sorted_df = df.sort_values(by=mbti_type, ascending=False)
+
+    # TOP10 나라 추출
+    top10 = sorted_df.head(10).copy()
+
+    # South Korea 포함 여부 체크
+    if "South Korea" not in top10["Country"].values:
         sk_row = df[df["Country"] == "South Korea"]
         if not sk_row.empty:
-            top10_df = pd.concat([top10_df, sk_row[["Country", selected_type]]])
+            top10 = pd.concat([top10, sk_row], ignore_index=True)
 
     # 색상 설정
-    colors = []
-    for i, country in enumerate(top10_df["Country"].values):
-        if i == 0:
-            colors.append("#FF3B30")
-        elif country == "South Korea":
-            colors.append("gradient")
+    bar_colors = []
+    for country in top10["Country"]:
+        if country == "South Korea":
+            bar_colors.append("#00AA00")  # ★ 대한민국: 초록색
         else:
-            alpha = 0.3 + 0.7 * (1 - i / len(top10_df))
-            colors.append(f"rgba(0,102,255,{alpha:.2f})")
+            bar_colors.append("rgba(30,144,255,0.8)")  # 기본 파란색
 
-    fig = go.Figure()
-
-    for i, (country, value, color) in enumerate(zip(top10_df["Country"], top10_df[selected_type], colors)):
-        if color != "gradient":
-            fig.add_trace(go.Bar(
-                x=[country],
-                y=[value],
-                text=[f"{value*100:.1f}%"],
-                textposition="outside",
-                marker_color=color,
-                name=country
-            ))
-        else:
-            # South Korea 전용 (위 빨강, 아래 파랑)
-            fig.add_trace(go.Bar(
-                x=[country],
-                y=[value],
-                text=[f"{value*100:.1f}%"],
-                textposition="outside",
-                marker=dict(
-                    color=[0, 1],
-                    colorscale=[[0, "#FF3B30"], [1, "#0066FF"]],
-                    showscale=False
-                ),
-                name="South Korea"
-            ))
-
-    fig.update_layout(
-        title=f"🌐 {selected_type} 비율이 높은 국가 TOP 10 (+South Korea 강조)",
-        xaxis_title="국가",
-        yaxis_title="비율",
-        template="simple_white",
-        showlegend=False
+    fig2 = px.bar(
+        top10,
+        x="Country",
+        y=mbti_type,
+        color="Country",
+        color_discrete_sequence=bar_colors,
+        title=f"🌐 {mbti_type} 비율이 높은 국가 TOP10 (South Korea 자동 포함)"
     )
-    st.plotly_chart(fig, use_container_width=True)
+
+    fig2.update_layout(showlegend=False, xaxis_title="국가", yaxis_title="비율(%)")
+    st.plotly_chart(fig2, use_container_width=True)
