@@ -1,348 +1,224 @@
-import streamlit as st
+#include <stdio.h>
+#include <string.h>
 
-st.set_page_config(page_title="MBTI 일본 노래 추천", layout="wide")
+typedef struct {
+    char title[200];
+    char lyric[300];
+    char ko[300];
+} Song;
 
-st.title("🎵 MBTI 기반 일본 노래 추천")
-st.write("원하는 MBTI 유형을 선택하면 일본 노래 + 보컬로이드 노래를 추천해줘!")
+typedef struct {
+    char mbti[10];
+    Song jpop[2];
+    Song vocaloid[1];
+} MBTI_Info;
 
-# -------------------------------------------------------
-#  MBTI별 데이터베이스 (이미지/가사/번역은 자유롭게 교체)
-# -------------------------------------------------------
+int main() {
+    MBTI_Info data[16] = {
 
-DATA = {
-    "ISTJ": {
-        "jpop": [
+        {
+            "ISTJ",
             {
-                "title": "Pretender - Official髭男dism",
-                "image": "이미지_URL_1",
-                "lyric": "하이라이트 가사 A",
-                "ko": "한국어 번역 A"
+                {"Subtitle - Official髭男dism", "하이라이트 가사 A", "한국어 번역 A"},
+                {"Lemon - 米津玄師", "하이라이트 가사 A", "한국어 번역 A"}
             },
             {
-                "title": "Lemon - 米津玄師",
-                "image": "이미지_URL_2",
-                "lyric": "하이라이트 가사 A",
-                "ko": "한국어 번역 A"
+                {"シャルル - バルーン", "하이라이트 가사 A", "한국어 번역 A"}
+            }
+        },
+
+        {
+            "ISFJ",
+            {
+                {"水平線 - back number", "하이라이트 가사 A", "한국어 번역 A"},
+                {"だから僕は音楽を辞めた - ヨルシカ", "하이라이트 가사 A", "한국어 번역 A"}
             },
-        ],
-        "vocaloid": [
             {
-                "title": "シャルル - バルーン",
-                "image": "이미지_URL_3",
-                "lyric": "하이라이트 가사 A",
-                "ko": "한국어 번역 A"
+                {"愛言葉III - DECO*27", "하이라이트 가사 A", "한국어 번역 A"}
             }
-        ]
-    },
+        },
 
-    "ISFJ": {
-        "jpop": [
+        {
+            "INFJ",
             {
-                "title": "アイラブユー - back number",
-                "image": "이미지_URL_1",
-                "lyric": "하이라이트 가사 A",
-                "ko": "한국어 번역 A"
-            }
-        ],
-        "vocaloid": [
+                {"夜に駆ける - YOASOBI", "하이라이트 가사 A", "한국어 번역 A"},
+                {"Brave Shine - Aimer", "하이라이트 가사 A", "한국어 번역 A"}
+            },
             {
-                "title": "ラプンツェル - Hatsune Miku",
-                "image": "이미지_URL_2",
-                "lyric": "하이라이트 가사 A",
-                "ko": "한국어 번역 A"
+                {"アスノヨゾラ哨戒班 - Orangestar", "하이라이트 가사 A", "한국어 번역 A"}
             }
-        ]
-    },
+        },
 
-    "INFJ": {
-        "jpop": [
+        {
+            "INTJ",
             {
-                "title": "夜に駆ける - YOASOBI",
-                "image": "이미지_URL_1",
-                "lyric": "하이라이트 가사 A",
-                "ko": "한국어 번역 A"
-            }
-        ],
-        "vocaloid": [
+                {"unravel - TK", "하이라이트 가사 A", "한국어 번역 A"},
+                {"逆光 - Ado", "하이라이트 가사 A", "한국어 번역 A"}
+            },
             {
-                "title": "エンヴィーベイビー - Kanaria",
-                "image": "이미지_URL_2",
-                "lyric": "하이라이트 가사 A",
-                "ko": "한국어 번역 A"
+                {"ベノム - かいりきベア", "하이라이트 가사 A", "한국어 번역 A"}
             }
-        ]
-    },
+        },
 
-    "INTJ": {
-        "jpop": [
+        {
+            "ISTP",
             {
-                "title": "unravel - TK from 凛として時雨",
-                "image": "이미지_URL_1",
-                "lyric": "하이라이트 가사 A",
-                "ko": "한국어 번역 A"
-            }
-        ],
-        "vocaloid": [
+                {"怪物 - YOASOBI", "하이라이트 가사 A", "한국어 번역 A"},
+                {"不可幸力 - Vaundy", "하이라이트 가사 A", "한국어 번역 A"}
+            },
             {
-                "title": "失敗作少女 - かいりきベア",
-                "image": "이미지_URL_2",
-                "lyric": "하이라이트 가사 A",
-                "ko": "한국어 번역 A"
+                {"ブリキノダンス - 日向電工", "하이라이트 가사 A", "한국어 번역 A"}
             }
-        ]
-    },
+        },
 
-    "ISTP": {
-        "jpop": [
+        {
+            "ISFP",
             {
-                "title": "怪物 - YOASOBI",
-                "image": "이미지_URL_1",
-                "lyric": "하이라이트 가사 A",
-                "ko": "한국어 번역 A"
-            }
-        ],
-        "vocaloid": [
+                {"花に亡霊 - ヨルシカ", "하이라이트 가사 A", "한국어 번역 A"},
+                {"スパークル - RADWIMPS", "하이라이트 가사 A", "한국어 번역 A"}
+            },
             {
-                "title": "ブリキノダンス - 日向電工",
-                "image": "이미지_URL_2",
-                "lyric": "하이라이트 가사 A",
-                "ko": "한국어 번역 A"
+                {"メルト - supercell", "하이라이트 가사 A", "한국어 번역 A"}
             }
-        ]
-    },
+        },
 
-    "ISFP": {
-        "jpop": [
+        {
+            "INFP",
             {
-                "title": "花に亡霊 - ヨルシカ",
-                "image": "이미지_URL_1",
-                "lyric": "하이라이트 가사 A",
-                "ko": "한국어 번역 A"
-            }
-        ],
-        "vocaloid": [
+                {"春泥棒 - ヨルシカ", "하이라이트 가사 A", "한국어 번역 A"},
+                {"ドラマツルギー - Eve", "하이라이트 가사 A", "한국어 번역 A"}
+            },
             {
-                "title": "メルト - supercell",
-                "image": "이미지_URL_2",
-                "lyric": "하이라이트 가사 A",
-                "ko": "한국어 번역 A"
+                {"カゲロウデイズ - じん", "하이라이트 가사 A", "한국어 번역 A"}
             }
-        ]
-    },
+        },
 
-    "INFP": {
-        "jpop": [
+        {
+            "INTP",
             {
-                "title": "春泥棒 - ヨルシカ",
-                "image": "이미지_URL_1",
-                "lyric": "하이라이트 가사 A",
-                "ko": "한국어 번역 A"
-            }
-        ],
-        "vocaloid": [
+                {"KING - Kanaria", "하이라이트 가사 A", "한국어 번역 A"},
+                {"堕天 - Creepy Nuts", "하이라이트 가사 A", "한국어 번역 A"}
+            },
             {
-                "title": "アスノヨゾラ哨戒班 - Orangestar",
-                "image": "이미지_URL_2",
-                "lyric": "하이라이트 가사 A",
-                "ko": "한국어 번역 A"
+                {"ドクハク - 水野あつ", "하이라이트 가사 A", "한국어 번역 A"}
             }
-        ]
-    },
+        },
 
-    "INTP": {
-        "jpop": [
+        {
+            "ESTP",
             {
-                "title": "KING - Kanaria",
-                "image": "이미지_URL_1",
-                "lyric": "하이라이트 가사 A",
-                "ko": "한국어 번역 A"
-            }
-        ],
-        "vocaloid": [
+                {"新時代 - Ado", "하이라이트 가사 A", "한국어 번역 A"},
+                {"紅蓮華 - LiSA", "하이라이트 가사 A", "한국어 번역 A"}
+            },
             {
-                "title": "ドクハク - 水野あつ",
-                "image": "이미지_URL_2",
-                "lyric": "하이라이트 가사 A",
-                "ko": "한국어 번역 A"
+                {"威風堂々 - 梅とら", "하이라이트 가사 A", "한국어 번역 A"}
             }
-        ]
-    },
+        },
 
-    "ESTP": {
-        "jpop": [
+        {
+            "ESFP",
             {
-                "title": "新時代 - Ado",
-                "image": "이미지_URL_1",
-                "lyric": "하이라이트 가사 A",
-                "ko": "한국어 번역 A"
-            }
-        ],
-        "vocaloid": [
+                {"打上花火 - DAOKO × 米津玄師", "하이라이트 가사 A", "한국어 번역 A"},
+                {"三原色 - YOASOBI", "하이라이트 가사 A", "한국어 번역 A"}
+            },
             {
-                "title": "威風堂々 - 梅とら",
-                "image": "이미지_URL_2",
-                "lyric": "하이라이트 가사 A",
-                "ko": "한국어 번역 A"
+                {"脱法ロック - Neru", "하이라이트 가사 A", "한국어 번역 A"}
             }
-        ]
-    },
+        },
 
-    "ESFP": {
-        "jpop": [
+        {
+            "ENFP",
             {
-                "title": "打上花火 - DAOKO × 米津玄師",
-                "image": "이미지_URL_1",
-                "lyric": "하이라이트 가사 A",
-                "ko": "한국어 번역 A"
-            }
-        ],
-        "vocaloid": [
+                {"怪獣の花唄 - Vaundy", "하이라이트 가사 A", "한국어 번역 A"},
+                {"Habit - SEKAI NO OWARI", "하이라이트 가사 A", "한국어 번역 A"}
+            },
             {
-                "title": "脱法ロック - Neru",
-                "image": "이미지_URL_2",
-                "lyric": "하이라이트 가사 A",
-                "ko": "한국어 번역 A"
+                {"テオ - Omoi", "하이라이트 가사 A", "한국어 번역 A"}
             }
-        ]
-    },
+        },
 
-    "ENFP": {
-        "jpop": [
+        {
+            "ENTP",
             {
-                "title": "怪獣の花唄 - Vaundy",
-                "image": "이미지_URL_1",
-                "lyric": "하이라이트 가사 A",
-                "ko": "한국어 번역 A"
-            }
-        ],
-        "vocaloid": [
+                {"阿修羅ちゃん - Ado", "하이라이트 가사 A", "한국어 번역 A"},
+                {"ナンセンス文学 - Eve", "하이라이트 가사 A", "한국어 번역 A"}
+            },
             {
-                "title": "テオ - Omoi",
-                "image": "이미지_URL_2",
-                "lyric": "하이라이트 가사 A",
-                "ko": "한국어 번역 A"
+                {"ヒバナ - DECO*27", "하이라이트 가사 A", "한국어 번역 A"}
             }
-        ]
-    },
+        },
 
-    "ENTP": {
-        "jpop": [
+        {
+            "ESTJ",
             {
-                "title": "逆光 - Ado",
-                "image": "이미지_URL_1",
-                "lyric": "하이라이트 가사 A",
-                "ko": "한국어 번역 A"
-            }
-        ],
-        "vocaloid": [
+                {"炎 - LiSA", "하이라이트 가사 A", "한국어 번역 A"},
+                {"CORE PRIDE - UVERworld", "하이라이트 가사 A", "한국어 번역 A"}
+            },
             {
-                "title": "ヒバナ - DECO*27",
-                "image": "이미지_URL_2",
-                "lyric": "하이라이트 가사 A",
-                "ko": "한국어 번역 A"
+                {"劣等上等 - Giga", "하이라이트 가사 A", "한국어 번역 A"}
             }
-        ]
-    },
+        },
 
-    "ESTJ": {
-        "jpop": [
+        {
+            "ESFJ",
             {
-                "title": "紅蓮華 - LiSA",
-                "image": "이미지_URL_1",
-                "lyric": "하이라이트 가사 A",
-                "ko": "한국어 번역 A"
-            }
-        ],
-        "vocaloid": [
+                {"シル・ヴ・プレジデント - P丸様。", "하이라이트 가사 A", "한국어 번역 A"},
+                {"可愛くてごめん - HoneyWorks", "하이라이트 가사 A", "한국어 번역 A"}
+            },
             {
-                "title": "劣等上等 - Giga",
-                "image": "이미지_URL_2",
-                "lyric": "하이라이트 가사 A",
-                "ko": "한국어 번역 A"
+                {"桃源恋歌 - GARNiDELiA", "하이라이트 가사 A", "한국어 번역 A"}
             }
-        ]
-    },
+        },
 
-    "ESFJ": {
-        "jpop": [
+        {
+            "ENFJ",
             {
-                "title": "シル・ヴ・プレジデント - P丸様。",
-                "image": "이미지_URL_1",
-                "lyric": "하이라이트 가사 A",
-                "ko": "한국어 번역 A"
-            }
-        ],
-        "vocaloid": [
+                {"群青 - YOASOBI", "하이라이트 가사 A", "한국어 번역 A"},
+                {"残響散歌 - Aimer", "하이라이트 가사 A", "한국어 번역 A"}
+            },
             {
-                "title": "桃源恋歌 - GARNiDELiA",
-                "image": "이미지_URL_2",
-                "lyric": "하이라이트 가사 A",
-                "ko": "한국어 번역 A"
+                {"ゴーストルール - DECO*27", "하이라이트 가사 A", "한국어 번역 A"}
             }
-        ]
-    },
+        },
 
-    "ENFJ": {
-        "jpop": [
+        {
+            "ENTJ",
             {
-                "title": "群青 - YOASOBI",
-                "image": "이미지_URL_1",
-                "lyric": "하이라이트 가사 A",
-                "ko": "한국어 번역 A"
-            }
-        ],
-        "vocaloid": [
+                {"うっせぇわ - Ado", "하이라이트 가사 A", "한국어 번역 A"},
+                {"不可逆リプレイス - MY FIRST STORY", "하이라이트 가사 A", "한국어 번역 A"}
+            },
             {
-                "title": "プロトディスコ - DECO*27",
-                "image": "이미지_URL_2",
-                "lyric": "하이라이트 가사 A",
-                "ko": "한국어 번역 A"
+                {"ヴィラン - 日向電工", "하이라이트 가사 A", "한국어 번역 A"}
             }
-        ]
-    },
+        }
+    };
 
-    "ENTJ": {
-        "jpop": [
-            {
-                "title": "炎 - LiSA",
-                "image": "이미지_URL_1",
-                "lyric": "하이라이트 가사 A",
-                "ko": "한국어 번역 A"
+    char input[10];
+    printf("당신의 MBTI를 입력하세요 (예: INFJ): ");
+    scanf("%s", input);
+
+    int found = 0;
+
+    for (int i = 0; i < 16; i++) {
+        if (strcmp(input, data[i].mbti) == 0) {
+            found = 1;
+            printf("\n===== %s 일본 노래 추천 =====\n", data[i].mbti);
+
+            printf("\n[ J-POP 추천곡 ]\n");
+            for (int j = 0; j < 2; j++) {
+                printf("- %s\n", data[i].jpop[j].title);
             }
-        ],
-        "vocaloid": [
-            {
-                "title": "ブリキノダンス - 日向電工",
-                "image": "이미지_URL_2",
-                "lyric": "하이라이트 가사 A",
-                "ko": "한국어 번역 A"
-            }
-        ]
-    },
+
+            printf("\n[ 보컬로이드 추천곡 ]\n");
+            printf("- %s\n", data[i].vocaloid[0].title);
+
+            break;
+        }
+    }
+
+    if (!found) {
+        printf("지원하지 않는 MBTI입니다.\n");
+    }
+
+    return 0;
 }
-
-# -------------------------------------------------------
-#  UI
-# -------------------------------------------------------
-
-mbti = st.selectbox("MBTI를 선택하세요", list(DATA.keys()))
-
-if mbti:
-    st.header(f"🎧 {mbti} 추천 일본 노래")
-
-    # JPOP
-    st.subheader("⭐ 일본 J-POP 추천")
-    for song in DATA[mbti]["jpop"]:
-        st.image(song["image"], width=300)
-        st.write(f"### 🎵 {song['title']}")
-        st.write(f"**하이라이트 가사:** {song['lyric']}")
-        st.write(f"**한국어 번역:** {song['ko']}")
-        st.write("---")
-
-    st.subheader("💠 보컬로이드 추천")
-    for song in DATA[mbti]["vocaloid"]:
-        st.image(song["image"], width=300)
-        st.write(f"### 🎶 {song['title']}")
-        st.write(f"**하이라이트 가사:** {song['lyric']}")
-        st.write(f"**한국어 번역:** {song['ko']}")
-        st.write("---")
