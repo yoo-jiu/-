@@ -6,8 +6,8 @@ import streamlit as st
 #               [(유명 VOCALOID 곡 제목, 이미지 URL, 가사 일부)])
 MBTI_DATA = {
     "ISTJ": ("현실적, 논리적, 책임감 강한 원칙주의자",
-             [("아이묭 - 마리골드 (マリーゴールド)", "https://i.imgur.com/G3t4p7C.jpeg", "麦わらの帽子の君が\n揺れるたびに 揺れるたびに"),
-              ("히라이 켄 - Non-Fiction", "https://i.imgur.com/1mH9y1w.jpeg", "誰もが誰かのノンフィクション\nそうさ僕ら物語の途中")],
+             [("아이묭 - 마리골드 (マリーゴールド)", "https://i.imgur.com/G3t4pCg.jpeg", "麦わらの帽子の君が\n揺れるたびに 揺れるたびに"),
+              ("히라이 ケン - Non-Fiction", "https://i.imgur.com/1mH9y1w.jpeg", "誰もが誰かのノンフィクション\nそうさ僕ら物語の途中")],
              [("하츠네 미쿠 - 멜트 (メルト)", "https://i.imgur.com/mX9xLzF.jpeg", "メルト 溶けてしまいそう\n好きだなんて 絶対言えない"),
               ("카가미네 린/렌 - 로스트 원의 호곡 (ロストワンの号哭)", "https://i.imgur.com/8Q7O0lT.jpeg", "一体全体何を学べば\nテストの点数は上がるんですか")]),
 
@@ -21,7 +21,7 @@ MBTI_DATA = {
              [("King Gnu - 백일 (白日)", "https://i.imgur.com/h5rC51m.jpeg", "真っ白な日々に舞い降りた\n黒い雨が 洗い流した"),
               ("미야자키 하야오 OST - 언제나 몇 번이라도", "https://i.imgur.com/h6f3p5v.jpeg", "呼んでいる 胸のどこか奥で\nいつも心踊る 夢を見たい")],
              [("하츠네 미쿠 - 천본앵 (千本桜)", "https://i.imgur.com/E5E8yE8.jpeg", "千本桜 夜ニ紛レ\n君ノ歌声 モガセヨ"),
-              ("40mP - 꼭두각시 피에로 (からくりピエロ)", "https://i.imgur.com/lJ4J1jH.jpeg", "からくりピエロ 踊る夜\n君の心 弄ぶように")]),
+              ("40mP - 꼭두각시 피에로 (からくりピエロ)", "https://i.com/lJ4J1jH.jpeg", "からくりピエロ 踊る夜\n君の心 弄ぶように")]),
 
     "INTJ": ("지적 호기심이 많고 전략적이며 독립적인 설계자",
              [("RADWIMPS - 전전전세 (前前前世)", "https://i.imgur.com/2s3j5Bq.jpeg", "君のゼンゼンゼン世から僕は\n君を探し始めたよ"),
@@ -40,7 +40,7 @@ MBTI_DATA = {
              [("Vaundy - 괴물 (怪獣の花唄)", "https://i.imgur.com/G3Z1V67.jpeg", "怪獣の歌が響く\n僕らの世界で"),
               ("나카지마 미유키 - 실 (糸)", "https://i.imgur.com/P0u0B6e.jpeg", "縦の糸はあなた 横の糸は私\n逢うべき糸に 出会えることを")],
              [("하츠네 미쿠 - 노래에 형태는 없지만 (歌に形はないけれど)", "https://i.imgur.com/a4E2D3E.jpeg", "歌に形は無いけれど\n君の心を揺らすはず"),
-              ("메구리네 루카 - Just Be Friends", "https://i.imgur.com/q2y2n0q.jpeg", "Just be friends\nただそれだけ")]),
+              ("메구리네 루카 - Just Be Friends", "https://i.imgur.com/q2y2n0q.jpeg", "Just Be Friends\nただそれだけ")]),
 
     "INFP": ("낭만적이고 사려 깊으며 이상적인 가치 추구자",
              [("YOASOBI - 밤을 달리다 (夜に駆ける)", "https://i.imgur.com/h9y9y6y.jpeg", "沈むように溶けてゆくように\n二人だけの空が広がる夜に"),
@@ -48,11 +48,13 @@ MBTI_DATA = {
              [("하츠네 미쿠 - 이별만이 인생이다 (別れだけが人生だ)", "https://i.imgur.com/5J3J5J3.jpeg", "別れだけが人生だ\nそうやって生きてきた"),
               ("벌룬 - 샤를 (シャルル)", "https://i.imgur.com/6U6U6U6.jpeg", "シャルル シャルル シャルル\n笑って 笑って")]),
 
+    # ---------- **여기부터 수정된 부분입니다.** ----------
     "INTP": ("조용하고 분석적이며 끊임없이 지식을 탐구하는 사색가",
              [("Eve - 회회기담 (廻廻奇譚)", "https://i.imgur.com/7L7L7L7.jpeg", "呪いの廻るこの世界で\n僕は君を救えるのか"),
               ("Mrs. GREEN APPLE - 아오와 아페 (青と夏)", "https://i.imgur.com/8M8M8M8.jpeg", "青い夏 空に舞う\n白い雲 掴もうよ")],
-             [("하츠네 미쿠 - 마트료시카 (マトリョシカ)", "https://i.imgur.com/9N9N9N9.jpeg", "マトリョシカ マトリョシカ\n踊り狂った")]),
+             [("하츠네 미쿠 - 마트료시카 (マトリョシカ)", "https://i.imgur.com/9N9N9N9.jpeg", "マトリョシカ マトリョシカ\n踊り狂った"),
               ("카후 - 퀸 오브 몬스터즈 (QUEEN OF MONSTERS)", "https://i.imgur.com/XqXqXqX.jpeg", "Queen of Monsters\n私は自由よ")]),
+    # ----------------------------------------------------
 
     "ESTP": ("개방적이고 행동 지향적이며 타협을 모르는 사업가",
              [("DISH// - 고양이 (猫)", "https://i.imgur.com/1B1B1B1.jpeg", "猫になった 君と二人\n愛し合ったのは幻かな"),
@@ -79,7 +81,7 @@ MBTI_DATA = {
               ("카가미네 린 - 악의 딸 (悪ノ娘)", "https://i.imgur.com/6Q6Q6Q6.jpeg", "悪ノ娘\nまたもや傲慢に")]),
 
     "ESTJ": ("실용적이고 체계적이며 현실적인 관리자",
-             [("호시노 ゲン - 恋 (코이)", "https://i.imgur.com/7R7R7R7.jpeg", "恋ダンス踊るように\n二人で歩こう"),
+             [("호시노 겐 - 恋 (코이)", "https://i.imgur.com/7R7R7R7.jpeg", "恋ダンス踊るように\n二人で歩こう"),
               ("아무로 나미에 - Can You Celebrate?", "https://i.imgur.com/8S8S8S8.jpeg", "Can you celebrate?\nCan you kiss me tonight?")],
              [("하츠네 미쿠 - 팩토리 오토마타 (ファクトリーオートマタ)", "https://i.imgur.com/9T9T9T9.jpeg", "ファクトリーオートマタ\n動き続ける"),
               ("MEIKO - Nostalogic", "https://i.imgur.com/0U0U0U0.jpeg", "Nostalogic\n繰り返す記憶")]),
@@ -139,7 +141,8 @@ def main():
                 st.image(img_url, width=150, caption=f"'{title}' 이미지")
             with col2:
                 st.markdown(f"### {title}")
-                st.write(f"```\n{lyrics}\n```")
+                # 가사를 코드 블록으로 표시하여 포맷 유지
+                st.code(lyrics, language="text") 
                 st.markdown("---")
         st.caption("※ 대중적으로 많은 사랑을 받은 히트곡 위주로 선정되었습니다.")
         
@@ -153,7 +156,8 @@ def main():
                 st.image(img_url, width=150, caption=f"'{title}' 이미지")
             with col2:
                 st.markdown(f"### {title}")
-                st.write(f"```\n{lyrics}\n```")
+                # 가사를 코드 블록으로 표시하여 포맷 유지
+                st.code(lyrics, language="text") 
                 st.markdown("---")
         st.caption("※ 보컬로이드의 상징적인 명곡 및 유형과 분위기가 맞는 곡으로 선정되었습니다.")
         
